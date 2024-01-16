@@ -28,13 +28,17 @@ velocity = 0
 on_ground = True
 crouch = False
 
-background_image = pygame.image.load("C:\\Users\\larde\\Downloads\\fond.png")
-player_image_g = pygame.image.load("C:\\Users\\larde\\Downloads\\persog.png")
-player_image_d = pygame.image.load("C:\\Users\\larde\\Downloads\\persod.png")
-player_image_sd = pygame.image.load("C:\\Users\\larde\\Downloads\\persosd1.png")
-player_image_sg = pygame.image.load("C:\\Users\\larde\\Downloads\\persosg1.png")
-player_image_c = pygame.image.load("C:\\Users\\larde\\Downloads\\persoc.png")
-croco = pygame.image.load("C:\\Users\\larde\\Downloads\\croco.png")
+background_image = pygame.image.load("C:\\Users\\larde\\OneDrive\\Bureau\\Informatique\\Python\\Piscine\\images\\fond.png")
+background_image = pygame.transform.scale(background_image, (1550, 1000))
+player_image_g = pygame.image.load("C:\\Users\\larde\\OneDrive\\Bureau\\Informatique\\Python\\Piscine\\images\\persog.png")
+player_image_d = pygame.image.load("C:\\Users\\larde\\OneDrive\\Bureau\\Informatique\\Python\\Piscine\\images\\persod.png")
+player_image_sd = pygame.image.load("C:\\Users\\larde\\OneDrive\\Bureau\\Informatique\\Python\\Piscine\\images\\persosd1.png")
+player_image_sg = pygame.image.load("C:\\Users\\larde\\OneDrive\\Bureau\\Informatique\\Python\\Piscine\\images\\persosg1.png")
+player_image_c = pygame.image.load("C:\\Users\\larde\\OneDrive\\Bureau\\Informatique\\Python\\Piscine\\images\\persoc.png")
+croco = pygame.image.load("C:\\Users\\larde\\OneDrive\\Bureau\\Informatique\\Python\\Piscine\\images\\croco.png")
+ele = pygame.image.load("C:\\Users\\larde\\OneDrive\\Bureau\\Informatique\\Python\\Piscine\\images\\ele.png")
+palmier = pygame.image.load("C:\\Users\\larde\\OneDrive\\Bureau\\Informatique\\Python\\Piscine\\images\\palmier.png")
+lion = pygame.image.load("C:\\Users\\larde\\OneDrive\\Bureau\\Informatique\\Python\\Piscine\\images\\lion.png")
 
 directionPerso = 1
 
@@ -47,9 +51,9 @@ directionPerso = 1
 class Joueur(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.image = pygame.transform.scale(player_image_d, (100, 200))
+        self.image = pygame.transform.scale(player_image_d, (100, 150))
         self.rect = self.image.get_rect()
-        self.vitesse = 5
+        self.vitesse = 600
         self.player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
         self.player_pos.x = 500
         self.player_pos.y = 200
@@ -67,32 +71,107 @@ joueur = Joueur()
 
 
 
-class Obstacle(pygame.sprite.Sprite):
+class Mob(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.image = pygame.Surface((50, 50))
-        #self.image.fill((0, 0, 255)) Carrés bleus
-        self.image = pygame.transform.scale(croco, (200, 150))
+        i = random.randrange(1, 3)
+        if i == 1 :
+            mob = croco
+            a = 300
+            b = 200
+        elif i == 2 :
+            mob = lion
+            a = 250
+            b = 200
+        else :
+            pass
+
+        self.image = pygame.transform.scale(mob, (a, b))
         self.rect = self.image.get_rect()
-        self.rect.x = random.randrange(1700, 2100 - self.rect.width)
-        self.rect.y = 740
+
+        if i == 1 :
+            self.rect.width = 250
+            self.rect.x = random.randrange(1400, 2100 - self.rect.width)
+            self.rect.y =690
+        elif i == 2 :
+            self.rect.x = random.randrange(1400, 2200 - self.rect.width)
+            self.rect.y =720
+        else :
+            pass
+
         self.vitesse = random.randrange(1, 5)
 
     def update(self):
         self.rect.x -= self.vitesse
-        if self.rect.x < 0:
-            self.rect.y = 740
-            self.rect.x = random.randrange(1800, 2100 - self.rect.width)
+        if self.rect.x < -400:
+            i = random.randrange(1, 3)
+            if i == 1 :
+                mob = croco
+                a = 300
+                b = 200
+            elif i == 2 :
+                mob = lion
+                a = 250
+                b = 200
+            else :
+                pass
+
+            self.image = pygame.transform.scale(mob, (a, b))
+            self.rect = self.image.get_rect()
+
+            if i == 1 :
+                self.rect.width = 250
+                self.rect.x = random.randrange(1400, 2100 - self.rect.width)
+                self.rect.y =690
+            elif i == 2 :
+                self.rect.x = random.randrange(1400, 2200 - self.rect.width)
+                self.rect.y =720
+            else :
+                pass
+
+class Deco(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+
+        self.image = pygame.Surface((50, 50))
+        self.image = pygame.transform.scale(palmier, (400, 300))
+        self.rect = self.image.get_rect()
+        self.rect.x = random.randrange(1400, 2200 - self.rect.width)
+        self.rect.y =580
+        self.vitesse = 10
+
+    def update(self):
+        if self.rect.x < -400:
+            self.rect.x = 1500         
+            self.rect.y =580
+        if self.rect.x > 1600 :
+            self.rect.x = -300
+            self.rect.y = 580
+
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_d] or keys[pygame.K_RIGHT] :
+            self.rect.x -= self.vitesse
+        if keys[pygame.K_q] or keys[pygame.K_LEFT] :
+            self.rect.x += self.vitesse
+
+
 
 all_sprites = pygame.sprite.Group()
 obstacles = pygame.sprite.Group()
+decs = pygame.sprite.Group()
 all_sprites.add(joueur)
 
 # Nombre de Sprites type obstacle
-for _ in range(3):
-    obstacle = Obstacle()
+for _ in range(2):
+    obstacle = Mob()
     all_sprites.add(obstacle)
     obstacles.add(obstacle)
+
+for z in range(1):
+    dec = Deco()
+    all_sprites.add(dec)
+    decs.add(dec)
 
 
 
@@ -150,9 +229,9 @@ while running:
         joueur.player_pos.x -= 1 * dt
     elif (keys[pygame.K_q] or keys[pygame.K_LEFT]) and crouch == False :
             directionPerso = 1
-            joueur.player_pos.x -= 600 * dt
+            joueur.player_pos.x -= joueur.vitesse * dt
     elif (keys[pygame.K_d] or keys[pygame.K_RIGHT]) and crouch == False  :
-            joueur.player_pos.x += 600 * dt
+            joueur.player_pos.x += joueur.vitesse * dt
             directionPerso = 0
 
     if keys[pygame.K_s] or keys[pygame.K_DOWN] :
@@ -204,4 +283,4 @@ pygame.quit()
 
 # Old content _____________________________________________________________________________________
 
-#pygame.draw.circle(screen, "red", player_pos, 40)    ddd
+#pygame.draw.circle(screen, "red", player_pos, 40)
