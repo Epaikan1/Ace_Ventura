@@ -1,0 +1,55 @@
+import pygame
+import random
+import sys
+
+pygame.init()
+
+#  variables
+largeur_fenetre = 800
+hauteur_fenetre = 600
+fps = 60
+horloge = pygame.time.Clock()
+fenetre = pygame.display.set_mode((largeur_fenetre, hauteur_fenetre))
+pygame.display.set_caption("Ace Ventura Course")
+
+# Couleurs
+blanc = (255, 255, 255)
+noir = (0, 0, 0)
+
+# Chargement des images
+#obstacle_image = pygame.image.load("/bureau/projet_python/obstacles.jpg")
+#safari_image = pygame.image.load("/bureau/projet_python/safari.png")
+#voiture_image = pygame.image.load("/bureau/projet_python/voiture.png")
+
+#/Users/marowague/Desktop/projet python/game.py
+
+fond = pygame.image.load("/Users/marowague/Desktop/projet_python/safari.png")
+voiture_image = pygame.image.load("/Users/marowague/Desktop/projet_python/voiture.jpg")
+obstacle_image = pygame.image.load("/Users/marowague/Desktop/projet_python/obstacles.jpg")
+
+
+# Classe pour les obstacles
+class Obstacle(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.transform.scale(obstacle_image, (50, 50))
+        self.rect = self.image.get_rect()
+        self.rect.x = random.randrange(0, largeur_fenetre - self.rect.width)
+        self.rect.y = random.randrange(-100, -40)
+        self.vitesse = random.randrange(1, 5)
+
+    def update(self):
+        self.rect.y += self.vitesse
+        if self.rect.y > hauteur_fenetre:
+            self.rect.y = random.randrange(-100, -40)
+            self.rect.x = random.randrange(0, largeur_fenetre - self.rect.width)
+
+# groupes de sprites
+all_sprites = pygame.sprite.Group()
+obstacles = pygame.sprite.Group()
+
+# Génération des obstacles
+for _ in range(8):
+    obstacle = Obstacle()
+    all_sprites.add(obstacle)
+    obstacles.add(obstacle)
