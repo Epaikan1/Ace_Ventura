@@ -3,70 +3,82 @@ import sys
 
 pygame.init()
 
-# Variables
-largeur_fenetre = 800
-hauteur_fenetre = 600
 fps = 60
 horloge = pygame.time.Clock()
-fenetre = pygame.display.set_mode((largeur_fenetre, hauteur_fenetre))
+screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 pygame.display.set_caption("Ace Ventura Course")
 
-# Couleurs
 blanc = (255, 255, 255)
 noir = (0, 0, 0)
 
-# Charger l'image de fond
-fond1 = pygame.image.load("/Users/maro wague/Desktop/projet_python/fond1.png")
-fond1 = pygame.transform.scale(fond1, (largeur_fenetre, hauteur_fenetre))
+fond1 = pygame.image.load("C:\\Users\\larde\\OneDrive\\Bureau\\Informatique\\Python\\Piscine\\images\\1.png").convert()
+fond2 = pygame.image.load("C:\\Users\\larde\\OneDrive\\Bureau\\Informatique\\Python\\Piscine\\images\\2.png").convert()
+fond1 = pygame.transform.scale(fond1, screen.get_size())
+fond2 = pygame.transform.scale(fond2, screen.get_size())
 
 class Personnage(pygame.sprite.Sprite):
+
     def __init__(self, image, x, y):
+
         super().__init__()
         self.image = image
         self.rect = self.image.get_rect()
         self.rect.midbottom = (x, y)
 
     def afficher(self):
-        fenetre.blit(self.image, self.rect)
 
-# Charger l'image du personnage et ajuster sa taille
-image_personnage = pygame.image.load("/Users/marowague/Desktop/projet_python/personnage.png")
-image_personnage = pygame.transform.scale(image_personnage, (500, 500))
+        screen.blit(self.image, self.rect)
 
-# Créer une instance du personnage en bas de l'écran
-personnage = Personnage(image_personnage, largeur_fenetre // 2, hauteur_fenetre + 240)
+class GameOver:
 
-def afficher_game_over():
-    # Afficher l'image de fond
-    fenetre.blit(fond1, (0, 0))
+    def __init__(self):
 
-    # Créer une police pour le texte
-    police = pygame.font.Font(None, 74)
-    
-    # Créer un texte "Game Over"
-    #texte_game_over = police.render("Game Over", True, blanc)
-    #rect_game_over = texte_game_over.get_rect()
-    #rect_game_over.center = (largeur_fenetre // 2, hauteur_fenetre // 2 - 50)
-    
-    # Afficher le texte "Game Over"
-    #fenetre.blit(texte_game_over, rect_game_over)
+        self.i = 1
 
-    # Afficher le personnage en bas de l'écran
-    personnage.afficher()
 
-    pygame.display.flip()
+    def afficher(self):
 
-# Boucle principale
-game_over = True  # Mettez cette variable à True pour afficher la page Game Over
+        screen.blit(fond1, (0, 0))
 
-while True:
+        pygame.display.flip()
+
+    def update(self):
+
+        self.i += 1
+
+        if self.i <= 50:
+            screen.blit(fond1, (0, 0))
+
+        elif self.i > 50 and self.i < 100 :
+            screen.blit(fond2, (0, 0))
+        else :
+            self.i = 1
+
+
+go = GameOver()
+
+game_over = True
+running = True
+
+i = 0
+
+while running:
     for evenement in pygame.event.get():
         if evenement.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
 
+    keys = pygame.key.get_pressed()
+
+    if keys[pygame.K_ESCAPE]:
+        running = False
+
     if game_over:
-        afficher_game_over()
+        go.afficher()
+        game_over = False
+
+    go.update()
 
     pygame.display.flip()
     horloge.tick(fps)
+
